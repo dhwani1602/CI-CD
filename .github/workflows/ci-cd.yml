@@ -67,7 +67,7 @@ jobs:
 
       # Example of deployment step (modify to your actual deployment process)
       - name: Deploy to production
-        run: |
+        run: pytest 
           echo "Deploying application..."
           # Replace this with your actual deployment command, e.g., AWS CLI, FTP, etc.
           # For example, using AWS CLI:
