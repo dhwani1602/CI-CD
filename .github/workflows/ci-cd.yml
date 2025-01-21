@@ -1,6 +1,5 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - JavaScript & Python
 
-# Trigger the workflow on push or pull_request events to the main branch
 on:
   push:
     branches:
@@ -10,8 +9,29 @@ on:
       - main
 
 jobs:
-  # Job to set up environment (Dev)
-  dev:
+  # Job to run Python tests
+  python-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies (Python)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
+
+      - name: Run Python tests
+        run: |
+          pytest  # You can replace this with your preferred Python test framework (e.g., unittest)
+
+  # Job to run JavaScript tests
+  node-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,54 +42,44 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (Node.js)
+        run: npm install  # Install Node.js dependencies from package.json
 
-      - name: Build application
-        run: npm run build
+      - name: Run JavaScript tests
+        run: npm test  # Run tests with your chosen test framework (e.g., Jest, Mocha)
 
-  # Job to run tests (Test)
-  test:
-    runs-on: ubuntu-latest
-    needs: dev  # Ensure that 'dev' job is completed before starting test
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-  # Job to deploy the application (Deploy)
+  # Job to deploy the application
   deploy:
     runs-on: ubuntu-latest
-    needs: test  # Ensure that 'test' job is completed before deploy
-
+    needs: [python-test, node-test]  # Ensure that tests pass before deployment
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Set up Python (for deployment tasks if needed)
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Set up Node.js (for deployment tasks if needed)
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Install dependencies
-        run: npm install
+      # Install dependencies for deployment (both Python and Node.js)
+      - name: Install dependencies (Python & Node.js)
+        run: |
+          pip install -r requirements.txt  # Python dependencies
+          npm install  # Node.js dependencies
 
-      # Example of deployment step (modify to your actual deployment process)
-      - name: Deploy to production
-        run: pytest 
+      # Example of deploying to AWS, Azure, or a similar platform
+      - name: Deploy Application
+        run: |
           echo "Deploying application..."
-          # Replace this with your actual deployment command, e.g., AWS CLI, FTP, etc.
-          # For example, using AWS CLI:
+          # Replace with your actual deployment commands (e.g., AWS CLI, Azure CLI, Heroku CLI, etc.)
+          # For example, using AWS CLI to deploy a Python and Node.js application:
           # aws s3 sync ./build s3://your-bucket-name
+          # Or for Heroku deployment:
+          # git remote add heroku https://git.heroku.com/your-app.git
+          # git push heroku main
 
