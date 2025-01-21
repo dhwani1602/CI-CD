@@ -57,23 +57,11 @@ jobs:
     needs: build-and-test  # Ensure that tests pass before deployment
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout Repository (only once for deployment)
       uses: actions/checkout@v3
 
-    # Set up Python for deployment tasks
-    - name: Set up Python for deployment
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.x'
-
-    # Set up Node.js for deployment tasks
-    - name: Set up Node.js for deployment
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    # Install dependencies for deployment (both Python and Node.js)
-    - name: Install dependencies for deployment (Python & Node.js)
+    # Install dependencies for deployment (only necessary if deployment needs a specific environment)
+    - name: Install Python and Node.js dependencies for deployment
       run: |
         pip install -r requirements.txt  # Python dependencies
         npm install  # Node.js dependencies
@@ -83,6 +71,11 @@ jobs:
       run: |
         echo "Deploying to Development Environment..."
         # Add your deployment script or command here, e.g., SSH, Docker, etc.
+
+
+
+
+
 
 
 
