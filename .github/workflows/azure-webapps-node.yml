@@ -35,13 +35,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Specify the Node.js version you want to use
+          cache: 'npm'         # Enable caching for npm dependencies
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build the project
+        run: npm run build  # Optional: Only if you have a build step
+
+      - name: Deploy (optional)
+        run: |
+          echo "Deploying to production server..."
+          # Add your deployment commands here
     
-    - name: Setup Node.js
-  uses: actions/setup-node@v4
-  with:
-    node-version: 20.18.1
-    cache: 'npm'
-    cache-dependency-path: "./path/to/your/package-lock.json"  # Update this path
+  #   - name: Setup Node.js
+  # uses: actions/setup-node@v4
+  # with:
+  #   node-version: 20.18.1
+  #   cache: 'npm'
+  #   cache-dependency-path: "./path/to/your/package-lock.json"  # Update this path
 
     # - name: Set up Node.js
     #   uses: actions/setup-node@v4
