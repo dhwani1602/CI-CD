@@ -47,7 +47,7 @@ jobs:
 
       - name: Run tests
         run: |
-         python sample.py  # Run tests using pytest
+         pytest  # Run tests using pytest
 
   deploy:
     runs-on: ubuntu-latest
