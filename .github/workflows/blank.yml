@@ -34,3 +34,36 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+          # Test Job
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # This job depends on the build job
+    needs: build
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+- name: Install Dependencies
+  working-directory: ./subdirectory  # Update if your project is in a subdirectory
+  run: npm install
+
+      # Install dependencies (for example, for a Node.js project)
+      - name: Install dependencies
+        run: |
+          echo Installing dependencies...
+          # Example: Install dependencies for a Node.js project
+          npm install
+
+      # Run tests
+      - name: Run Tests
+        run: |
+          echo Running tests...
+          # Example: Run tests using a test framework (e.g., Jest)
+          npm test
+
+
