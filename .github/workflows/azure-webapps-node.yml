@@ -35,12 +35,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+  uses: actions/setup-node@v4
+  with:
+    node-version: 20.18.1
+    cache: 'npm'
+    cache-dependency-path: "./path/to/your/package-lock.json"  # Update this path
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: ${{ env.NODE_VERSION }}
+    #     cache: 'npm'
 
     - name: npm install, build, and test
       run: |
